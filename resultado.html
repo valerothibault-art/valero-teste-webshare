@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Endereço de reserva — o Chrome recusou a intent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --ground: #eef5f0;
+        --panel: #ffffff;
+        --ink: #14211a;
+        --muted: #4f665a;
+        --line: #cfe0d5;
+        --accent: #17724a;
+        --accent-ink: #ffffff;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+          --ground: #0e1613;
+          --panel: #17211c;
+          --ink: #e4ede7;
+          --muted: #95a89d;
+          --line: #27352d;
+          --accent: #5cc58e;
+          --accent-ink: #0b1512;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        background: var(--ground);
+        color: var(--ink);
+        font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        line-height: 1.55;
+      }
+      .wrap {
+        max-width: 34rem;
+        margin: 0 auto;
+        padding-inline: 16px;
+        padding-block: 48px;
+      }
+      .selo {
+        display: inline-block;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent-ink);
+        background: var(--accent);
+        padding: 5px 11px;
+        border-radius: 999px;
+        margin-bottom: 16px;
+      }
+      h1 {
+        font-size: clamp(1.4rem, 5vw, 1.8rem);
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        margin: 0 0 12px;
+        text-wrap: balance;
+      }
+      p {
+        margin: 0 0 14px;
+        color: var(--muted);
+      }
+      .qual {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 16px;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 0.85rem;
+        color: var(--ink);
+        margin-bottom: 20px;
+      }
+      a.voltar {
+        display: inline-flex;
+        align-items: center;
+        min-height: 48px;
+        padding: 12px 20px;
+        border-radius: 9px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--ink);
+        text-decoration: none;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <span class="selo">Endereço de reserva</span>
+      <h1>O Chrome leu a intent e não conseguiu abrir nenhum app.</h1>
+      <div class="qual" id="qual">Teste: —</div>
+      <p>
+        Você chegou aqui porque o Chrome processou o endereço <code>intent:</code>, procurou uma
+        atividade que aceitasse ser aberta pelo navegador e não encontrou nenhuma. Foi então para o
+        endereço de reserva declarado na própria intent.
+      </p>
+      <p>
+        Isso é uma <strong>recusa</strong>, não uma falha da página: a navegação funcionou, o
+        endereço foi entendido, e o sistema é que não entregou a tela de contato.
+      </p>
+      <a class="voltar" href="./">Voltar aos testes</a>
+    </div>
+    <script>
+      var nomes = {
+        "1": "1 — ACTION_INSERT + type",
+        "2": "2 — ACTION_INSERT_OR_EDIT",
+        "3": "3 — INSERT + package da Samsung",
+        "4": "4 — ACTION_VIEW no .vcf",
+      };
+      var t = new URLSearchParams(location.search).get("t");
+      document.getElementById("qual").textContent = "Teste: " + (nomes[t] || "desconhecido");
+    </script>
+  </body>
+</html>

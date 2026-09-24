@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Web Share + vCard — bancada de teste</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --ground: #f2f4f5;
+        --panel: #ffffff;
+        --panel-sunken: #eceff1;
+        --ink: #15191e;
+        --muted: #5b666f;
+        --line: #d9dfe3;
+        --accent: #0d5a66;
+        --accent-ink: #ffffff;
+        --ok: #17724a;
+        --erro: #a3282a;
+        --warn: #8a5a10;
+        --shadow: 0 1px 2px rgba(21, 25, 30, 0.06), 0 6px 16px rgba(21, 25, 30, 0.05);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark;
+          --ground: #101418;
+          --panel: #191f24;
+          --panel-sunken: #12171b;
+          --ink: #e7ecef;
+          --muted: #96a2ab;
+          --line: #2a3238;
+          --accent: #4aa9b8;
+          --accent-ink: #0b1215;
+          --ok: #5cc58e;
+          --erro: #f08a8c;
+          --warn: #d9a441;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        background: var(--ground);
+        color: var(--ink);
+        font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      .wrap {
+        max-width: 44rem;
+        margin: 0 auto;
+        padding-inline: 16px;
+        padding-block: 28px 56px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .eyebrow {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin: 0 0 10px;
+      }
+
+      h1 {
+        font-size: clamp(1.45rem, 5vw, 1.9rem);
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        margin: 0 0 8px;
+        text-wrap: balance;
+      }
+
+      header p {
+        margin: 0;
+        color: var(--muted);
+        max-width: 58ch;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        padding: 16px;
+      }
+
+      h2 {
+        font-size: 0.78rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 0 0 10px;
+        font-weight: 600;
+      }
+
+      .teste h3 {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin: 0;
+      }
+
+      .cabeca {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      .num {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--accent-ink);
+        background: var(--accent);
+        border-radius: 999px;
+        width: 1.55rem;
+        height: 1.55rem;
+        display: inline-grid;
+        place-items: center;
+        flex: 0 0 auto;
+      }
+
+      .num.controle {
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--line);
+      }
+
+      .porque {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin: 0 0 14px;
+      }
+
+      button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 52px;
+        padding: 12px 18px;
+        border-radius: 9px;
+        background: var(--accent);
+        color: var(--accent-ink);
+        font: inherit;
+        font-weight: 600;
+        font-size: 1rem;
+        border: 1px solid transparent;
+        cursor: pointer;
+      }
+
+      button.secundario {
+        background: transparent;
+        color: var(--ink);
+        border-color: var(--line);
+      }
+
+      button:focus-visible {
+        outline: 3px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      dl.amb {
+        margin: 0;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 4px 14px;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 0.78rem;
+      }
+
+      dl.amb dt {
+        color: var(--muted);
+      }
+
+      dl.amb dd {
+        margin: 0;
+        word-break: break-word;
+      }
+
+      .sim {
+        color: var(--ok);
+        font-weight: 500;
+      }
+
+      .nao {
+        color: var(--erro);
+        font-weight: 500;
+      }
+
+      #log {
+        margin: 0;
+        padding: 12px;
+        background: var(--panel-sunken);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 0.75rem;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-break: break-word;
+        min-height: 5.5rem;
+        color: var(--ink);
+      }
+
+      .veredito {
+        margin: 12px 0 0;
+        padding: 12px 14px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: var(--panel-sunken);
+        font-size: 0.92rem;
+      }
+
+      .veredito strong {
+        display: block;
+        margin-bottom: 2px;
+      }
+
+      .dados dl {
+        margin: 0;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 4px 14px;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 0.8rem;
+      }
+
+      .dados dt {
+        color: var(--muted);
+      }
+
+      .dados dd {
+        margin: 0;
+      }
+
+      .nota {
+        font-size: 0.85rem;
+        color: var(--muted);
+        border-left: 2px solid var(--accent);
+        padding-left: 12px;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <p class="eyebrow">Bancada de teste · Android</p>
+        <h1>O Chrome aceita compartilhar um .vcf?</h1>
+        <p>
+          Três toques para saber se a Web Share API consegue entregar um cartão de contato ao
+          Sharesheet do Android. Abra no Galaxy S24 Ultra, com o Chrome, e toque em um teste por vez
+          — cada resultado aparece no registro no fim da página.
+        </p>
+      </header>
+
+      <section class="card">
+        <h2>Ambiente detectado</h2>
+        <dl class="amb">
+          <dt>navigator.share</dt>
+          <dd id="amb-share">—</dd>
+          <dt>navigator.canShare</dt>
+          <dd id="amb-canshare">—</dd>
+          <dt>Contexto seguro</dt>
+          <dd id="amb-seguro">—</dd>
+          <dt>Origem</dt>
+          <dd id="amb-origem">—</dd>
+          <dt>Navegador</dt>
+          <dd id="amb-ua">—</dd>
+        </dl>
+      </section>
+
+      <section class="card dados">
+        <h2>Dados fictícios do cartão de teste</h2>
+        <dl>
+          <dt>Nome</dt>
+          <dd>Teste Valero</dd>
+          <dt>Telefone</dt>
+          <dd>+55 41 99999-0000</dd>
+          <dt>E-mail</dt>
+          <dd>teste@example.com</dd>
+          <dt>Empresa</dt>
+          <dd>Valero Connect</dd>
+          <dt>Cargo</dt>
+          <dd>Teste</dd>
+          <dt>Nota</dt>
+          <dd>Teste de integração Android</dd>
+          <dt>Arquivo</dt>
+          <dd>teste-valero.vcf · text/vcard</dd>
+        </dl>
+      </section>
+
+      <article class="card teste">
+        <div class="cabeca">
+          <span class="num">1</span>
+          <h3>navigator.share({ files })</h3>
+        </div>
+        <p class="porque">
+          O teste que interessa. Monta o .vcf em memória, confere com
+          <code>canShare</code> se o Chrome aceita o arquivo e chama o compartilhamento. Se o
+          Sharesheet abrir, veja se <strong>Contatos</strong> aparece entre as opções.
+        </p>
+        <button id="btnVcf" type="button">Testar compartilhar contato</button>
+      </article>
+
+      <article class="card teste">
+        <div class="cabeca">
+          <span class="num controle">A</span>
+          <h3>Controle · download do .vcf</h3>
+        </div>
+        <p class="porque">
+          O comportamento de hoje, para comparação: baixa o mesmo arquivo. Serve também para provar
+          que a página consegue gerar o vCard corretamente.
+        </p>
+        <button id="btnDownload" type="button" class="secundario">Baixar o .vcf</button>
+      </article>
+
+      <article class="card teste">
+        <div class="cabeca">
+          <span class="num controle">B</span>
+          <h3>Controle · share de texto e link</h3>
+        </div>
+        <p class="porque">
+          Compartilha só título, texto e endereço — sem arquivo. Se este funcionar e o teste 1 não,
+          a Web Share está viva e o problema é especificamente o tipo do arquivo.
+        </p>
+        <button id="btnTexto" type="button" class="secundario">Compartilhar texto e link</button>
+      </article>
+
+      <section class="card">
+        <h2>Registro</h2>
+        <pre id="log">Nenhum teste executado ainda.</pre>
+        <div id="veredito" class="veredito" hidden></div>
+        <p class="nota" style="margin-top: 14px">
+          Se o Sharesheet abrir, feche-o normalmente e volte: cancelar é registrado aqui como
+          <code>AbortError</code>, o que também é um resultado válido — significa que o Chrome
+          aceitou o compartilhamento.
+        </p>
+      </section>
+    </div>
+
+    <script>
+      (function () {
+        var log = document.getElementById("log");
+        var veredito = document.getElementById("veredito");
+        var primeiraLinha = true;
+
+        function escrever(texto) {
+          var agora = new Date().toLocaleTimeString("pt-BR");
+          if (primeiraLinha) {
+            log.textContent = "";
+            primeiraLinha = false;
+          }
+          log.textContent += "[" + agora + "] " + texto + "\n";
+        }
+
+        function concluir(titulo, detalhe) {
+          veredito.hidden = false;
+          veredito.innerHTML = "";
+          var forte = document.createElement("strong");
+          forte.textContent = titulo;
+          veredito.appendChild(forte);
+          veredito.appendChild(document.createTextNode(detalhe));
+        }
+
+        // ---- vCard de teste, com os mesmos dados fictícios da página -------
+        var VCARD = [
+          "BEGIN:VCARD",
+          "VERSION:3.0",
+          "N:Valero;Teste;;;",
+          "FN:Teste Valero",
+          "ORG:Valero Connect",
+          "TITLE:Teste",
+          "TEL;TYPE=CELL,VOICE:+5541999990000",
+          "EMAIL;TYPE=INTERNET:teste@example.com",
+          "NOTE:Teste de integração Android",
+          "END:VCARD",
+          "",
+        ].join("\r\n");
+
+        function arquivoVcf() {
+          return new File([VCARD], "teste-valero.vcf", { type: "text/vcard" });
+        }
+
+        // ---- ambiente ------------------------------------------------------
+        function marcar(id, ok, texto) {
+          var el = document.getElementById(id);
+          el.textContent = texto;
+          el.className = ok ? "sim" : "nao";
+        }
+
+        marcar(
+          "amb-share",
+          typeof navigator.share === "function",
+          typeof navigator.share === "function" ? "disponível" : "ausente",
+        );
+        marcar(
+          "amb-canshare",
+          typeof navigator.canShare === "function",
+          typeof navigator.canShare === "function" ? "disponível" : "ausente",
+        );
+        marcar("amb-seguro", window.isSecureContext, window.isSecureContext ? "sim" : "não");
+        document.getElementById("amb-origem").textContent = location.origin;
+        document.getElementById("amb-ua").textContent = navigator.userAgent;
+
+        // ---- teste 1: compartilhar o arquivo -------------------------------
+        document.getElementById("btnVcf").addEventListener("click", function () {
+          veredito.hidden = true;
+          escrever("Teste 1 — montando teste-valero.vcf (text/vcard)…");
+
+          var arquivo;
+          try {
+            arquivo = arquivoVcf();
+            escrever("Arquivo criado: " + arquivo.name + " · " + arquivo.size + " bytes · " + arquivo.type);
+          } catch (e) {
+            escrever("ERRO ao criar o File: " + e.name + " — " + e.message);
+            concluir("Caso 4 — o navegador não montou o arquivo. ", "Erro antes mesmo de compartilhar.");
+            return;
+          }
+
+          if (typeof navigator.share !== "function") {
+            escrever("navigator.share não existe neste navegador.");
+            concluir("Caso 5 — Web Share indisponível. ", "Este navegador não tem a API.");
+            return;
+          }
+
+          if (typeof navigator.canShare === "function") {
+            var aceita = false;
+            try {
+              aceita = navigator.canShare({ files: [arquivo] });
+            } catch (e) {
+              escrever("canShare lançou: " + e.name + " — " + e.message);
+            }
+            escrever("canShare({ files: [.vcf] }) = " + aceita);
+            if (!aceita) {
+              escrever("O Chrome recusa este tipo de arquivo antes de abrir o Sharesheet.");
+              concluir(
+                "Caso 4 — o Chrome não aceita o .vcf. ",
+                "A lista de tipos permitidos para compartilhamento não inclui vCard. Nada será aberto.",
+              );
+              return;
+            }
+          } else {
+            escrever("canShare ausente; chamando share() direto.");
+          }
+
+          escrever("Chamando navigator.share({ files: [.vcf] })…");
+          navigator
+            .share({ files: [arquivo], title: "Teste Valero", text: "Contato de teste" })
+            .then(function () {
+              escrever("share() resolveu — o compartilhamento foi concluído.");
+              concluir(
+                "Caso 1 ou 2 — o Chrome aceitou o arquivo. ",
+                "Diga se abriu o Contatos direto (caso 1), se o Sharesheet trouxe Contatos (caso 2) ou se Contatos não apareceu (caso 3).",
+              );
+            })
+            .catch(function (e) {
+              escrever("share() rejeitou: " + e.name + " — " + e.message);
+              if (e && e.name === "AbortError") {
+                concluir(
+                  "Caso 2 ou 3 — o Sharesheet abriu e você cancelou. ",
+                  "O Chrome aceitou o arquivo. Diga se Contatos aparecia entre as opções.",
+                );
+              } else {
+                concluir("Caso 4 — o Chrome recusou o arquivo. ", "Veja o erro no registro acima.");
+              }
+            });
+        });
+
+        // ---- controle A: download ------------------------------------------
+        document.getElementById("btnDownload").addEventListener("click", function () {
+          veredito.hidden = true;
+          escrever("Controle A — baixando teste-valero.vcf…");
+          try {
+            var url = URL.createObjectURL(
+              new Blob([VCARD], { type: "text/vcard;charset=utf-8" }),
+            );
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "teste-valero.vcf";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(function () {
+              URL.revokeObjectURL(url);
+            }, 0);
+            escrever("Download disparado. Confira a barra de downloads do Chrome.");
+            concluir(
+              "Controle A executado. ",
+              "Se o arquivo baixou, a página monta o vCard corretamente — o que valida os outros testes.",
+            );
+          } catch (e) {
+            escrever("ERRO no download: " + e.name + " — " + e.message);
+          }
+        });
+
+        // ---- controle B: share de texto ------------------------------------
+        document.getElementById("btnTexto").addEventListener("click", function () {
+          veredito.hidden = true;
+          escrever("Controle B — compartilhando título, texto e link…");
+
+          if (typeof navigator.share !== "function") {
+            escrever("navigator.share não existe neste navegador.");
+            concluir("Web Share indisponível. ", "Sem a API, o teste 1 também não teria como rodar.");
+            return;
+          }
+
+          navigator
+            .share({
+              title: "Teste Valero",
+              text: "Contato de teste",
+              url: location.href,
+            })
+            .then(function () {
+              escrever("share() de texto resolveu — Web Share está funcionando.");
+              concluir(
+                "Web Share funciona neste aparelho. ",
+                "Se o teste 1 falhou, o problema é o tipo do arquivo, não a API.",
+              );
+            })
+            .catch(function (e) {
+              escrever("share() de texto rejeitou: " + e.name + " — " + e.message);
+              if (e && e.name === "AbortError") {
+                concluir(
+                  "Web Share funciona neste aparelho. ",
+                  "O Sharesheet abriu e você cancelou — é resultado válido.",
+                );
+              } else {
+                concluir("Web Share falhou até para texto. ", "Veja o erro no registro.");
+              }
+            });
+        });
+      })();
+    </script>
+  </body>
+</html>
